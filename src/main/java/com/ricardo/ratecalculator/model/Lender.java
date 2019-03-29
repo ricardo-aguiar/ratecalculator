@@ -1,23 +1,24 @@
 package com.ricardo.ratecalculator.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Lender {
 
     private final String name;
     private final double interestRate;
-    private final int availableFunds;
-    private final int loanedFunds;
+    private final BigDecimal availableFunds;
+    private final BigDecimal loanedFunds;
 
-    public Lender(String name, double interestRate, int availableFunds, int loanedFunds) {
+    public Lender(String name, double interestRate, BigDecimal availableFunds, BigDecimal loanedFunds) {
         this.name = name;
         this.interestRate = interestRate;
         this.availableFunds = availableFunds;
         this.loanedFunds = loanedFunds;
     }
 
-    public Lender(String name, double interestRate, int availableFunds) {
-        this(name, interestRate, availableFunds, 0);
+    public Lender(String name, double interestRate, BigDecimal availableFunds) {
+        this(name, interestRate, availableFunds, new BigDecimal("0"));
     }
 
     public String getName() {
@@ -28,11 +29,11 @@ public class Lender {
         return interestRate;
     }
 
-    public int getAvailableFunds() {
+    public BigDecimal getAvailableFunds() {
         return availableFunds;
     }
 
-    public int getLoanedFunds() {
+    public BigDecimal getLoanedFunds() {
         return loanedFunds;
     }
 
@@ -46,9 +47,9 @@ public class Lender {
         }
         Lender lender = (Lender) other;
         return Double.compare(lender.interestRate, interestRate) == 0 &&
-               availableFunds == lender.availableFunds &&
-               loanedFunds == lender.loanedFunds &&
-               Objects.equals(name, lender.name);
+               name.equals(lender.name) &&
+               availableFunds.compareTo(lender.availableFunds) == 0 &&
+               loanedFunds.compareTo(lender.loanedFunds) == 0;
     }
 
     @Override
@@ -65,5 +66,4 @@ public class Lender {
                + ", loanedFunds=" + loanedFunds
                + '}';
     }
-
 }

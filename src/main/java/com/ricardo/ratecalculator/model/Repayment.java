@@ -1,25 +1,26 @@
 package com.ricardo.ratecalculator.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Repayment {
 
-    private final double monthlyAmount;
-    private final double totalAmount;
+    private final BigDecimal monthlyAmount;
+    private final BigDecimal totalAmount;
     private final double interestRate;
 
-    public Repayment(double monthlyAmount, double totalAmount, double interestRate) {
+    public Repayment(BigDecimal monthlyAmount, BigDecimal totalAmount, double interestRate) {
 
         this.monthlyAmount = monthlyAmount;
         this.totalAmount = totalAmount;
         this.interestRate = interestRate;
     }
 
-    public double getMonthlyAmount() {
+    public BigDecimal getMonthlyAmount() {
         return monthlyAmount;
     }
 
-    public double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
@@ -36,9 +37,9 @@ public class Repayment {
             return false;
         }
         Repayment repayment = (Repayment) other;
-        return Double.compare(repayment.monthlyAmount, monthlyAmount) == 0 &&
-               Double.compare(repayment.totalAmount, totalAmount) == 0 &&
-               Double.compare(repayment.interestRate, interestRate) == 0;
+        return Double.compare(repayment.interestRate, interestRate) == 0 &&
+               monthlyAmount.compareTo(repayment.monthlyAmount) == 0 &&
+               totalAmount.compareTo(repayment.totalAmount) == 0;
     }
 
     @Override

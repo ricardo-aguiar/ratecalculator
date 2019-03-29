@@ -10,6 +10,7 @@ import com.ricardo.ratecalculator.model.builder.LenderBuilder;
 import com.ricardo.ratecalculator.repository.DataRepository;
 import com.ricardo.ratecalculator.repository.InMemLenderDataRepository;
 import com.ricardo.ratecalculator.service.OfferSelector;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,32 +33,32 @@ public class OfferSelectorTest {
     @Test
     @DisplayName("It should select a lender with the lowest interest rate to fulfill a loan request")
     public void shouldSelectLenderWithLowestInterestFee() {
-        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(640).build();
-        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.075).withAvailableFunds(1000).build();
+        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(new BigDecimal("640")).build();
+        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.075).withAvailableFunds(new BigDecimal("1000")).build();
 
         when(mockDataRepo.findAllOrderedByInterestRateAsc()).thenReturn(Arrays.asList(bob, smith));
 
-        List<Lender> actual = this.underTest.electOffers(340);
+        List<Lender> actual = this.underTest.electOffers(new BigDecimal("340"));
         assertThat(actual).isNotEmpty();
         assertThat(actual).extracting(Lender::getName, Lender::getInterestRate, Lender::getAvailableFunds, Lender::getLoanedFunds)
-                                .containsOnly(tuple("Bob", 0.069, 640, 340));
+                                .containsOnly(tuple("Bob", 0.069, new BigDecimal(640), new BigDecimal(340)));
     }
 
     @Test
     @DisplayName("It should select enough lenders with the lowest interest rate  to fulfill a loan request")
     public void shouldSelectEnoutLendersFromPoolToFulfillRequestedLoandAmount() {
-        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(640).build();
-        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.071).withAvailableFunds(1000).build();
-        Lender john = LenderBuilder.aLender().withName("john").withInterestRate(0.075).withAvailableFunds(1000).build();
+        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(new BigDecimal("640")).build();
+        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.071).withAvailableFunds(new BigDecimal("1000")).build();
+        Lender john = LenderBuilder.aLender().withName("john").withInterestRate(0.075).withAvailableFunds(new BigDecimal("1000")).build();
 
         when(mockDataRepo.findAllOrderedByInterestRateAsc()).thenReturn(Arrays.asList(bob, smith, john));
 
-        List<Lender> actual = this.underTest.electOffers(840);
+        List<Lender> actual = this.underTest.electOffers(new BigDecimal("840"));
 
         assertThat(actual).isNotEmpty();
         assertThat(actual).extracting(Lender::getName, Lender::getInterestRate, Lender::getAvailableFunds, Lender::getLoanedFunds)
-                          .containsOnly(tuple("Bob", 0.069, 640, 640),
-                                        tuple("Smith", 0.071, 1000, 200));
+                          .containsOnly(tuple("Bob", 0.069, new BigDecimal("640"), new BigDecimal("640")),
+                                        tuple("Smith", 0.071, new BigDecimal("1000"), new BigDecimal("200")));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class OfferSelectorTest {
 
         when(mockDataRepo.findAllOrderedByInterestRateAsc()).thenReturn(Collections.emptyList());
 
-        List<Lender> actual = this.underTest.electOffers(840);
+        List<Lender> actual = this.underTest.electOffers(new BigDecimal("840"));
 
         assertThat(actual).isEmpty();
     }
@@ -74,11 +75,11 @@ public class OfferSelectorTest {
     @Test
     @DisplayName("It should return false if there are sufficient funds in the market to fulfill a loan request")
     public void shouldReturnFalseWhenThereIsSufficientFundsToFulfillLoanRequest() {
-        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(640).build();
-        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.071).withAvailableFunds(1000).build();
+        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(new BigDecimal("640")).build();
+        Lender smith = LenderBuilder.aLender().withName("Smith").withInterestRate(0.071).withAvailableFunds(new BigDecimal("1000")).build();
         when(mockDataRepo.findAll()).thenReturn(Arrays.asList(bob, smith));
 
-        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(1000);
+        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(new BigDecimal("1000"));
 
         assertThat(actual).isFalse();
     }
@@ -87,10 +88,10 @@ public class OfferSelectorTest {
     @Test
     @DisplayName("It should return true if there aren't sufficient funds in the market to fulfill a loan request")
     public void shouldReturnTrueWhenThereIsSufficientFundsToFulfillLoanRequest() {
-        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(640).build();
+        Lender bob = LenderBuilder.aLender().withName("Bob").withInterestRate(0.069).withAvailableFunds(new BigDecimal("640")).build();
         when(mockDataRepo.findAll()).thenReturn(Arrays.asList(bob));
 
-        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(1000);
+        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(new BigDecimal("1000"));
 
         assertThat(actual).isTrue();
     }
@@ -100,7 +101,7 @@ public class OfferSelectorTest {
     public void shouldReturnTrueIfThereAreNoLendersOfferInTheMarket() {
         when(mockDataRepo.findAll()).thenReturn(Collections.emptyList());
 
-        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(1000);
+        boolean actual = this.underTest.doesNotHaveSufficientFundsInMarket(new BigDecimal("1000"));
 
         assertThat(actual).isTrue();
     }

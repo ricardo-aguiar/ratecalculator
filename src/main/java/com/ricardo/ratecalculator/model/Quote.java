@@ -1,23 +1,23 @@
 package com.ricardo.ratecalculator.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Quote {
 
-    private final int requestedAmount;
+    private final BigDecimal requestedAmount;
     private final double interestRate;
-    private final double monthlyRepayment;
-    private final double totalRepayment;
+    private final BigDecimal monthlyRepayment;
+    private final BigDecimal totalRepayment;
 
-    public Quote(int requestedAmount, double interestRate, double monthlyRepayment, double totalRepayment) {
-
+    public Quote(BigDecimal requestedAmount, double interestRate, BigDecimal monthlyRepayment, BigDecimal totalRepayment) {
         this.requestedAmount = requestedAmount;
         this.interestRate = interestRate;
         this.monthlyRepayment = monthlyRepayment;
         this.totalRepayment = totalRepayment;
     }
 
-    public int getRequestedAmount() {
+    public BigDecimal getRequestedAmount() {
         return requestedAmount;
     }
 
@@ -25,11 +25,11 @@ public class Quote {
         return interestRate;
     }
 
-    public double getMonthlyRepayment() {
+    public BigDecimal getMonthlyRepayment() {
         return monthlyRepayment;
     }
 
-    public double getTotalRepayment() {
+    public BigDecimal getTotalRepayment() {
         return totalRepayment;
     }
 
@@ -42,10 +42,10 @@ public class Quote {
             return false;
         }
         Quote quote = (Quote) other;
-        return requestedAmount == quote.requestedAmount &&
-               Double.compare(quote.interestRate, interestRate) == 0 &&
-               Double.compare(quote.monthlyRepayment, monthlyRepayment) == 0 &&
-               Double.compare(quote.totalRepayment, totalRepayment) == 0;
+        return Double.compare(quote.interestRate, interestRate) == 0 &&
+               requestedAmount.equals(quote.requestedAmount) &&
+               monthlyRepayment.equals(quote.monthlyRepayment) &&
+               totalRepayment.equals(quote.totalRepayment);
     }
 
     @Override

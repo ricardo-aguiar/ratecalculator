@@ -6,6 +6,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.ricardo.ratecalculator.RateCalculatorApp;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +17,7 @@ class ParameterValidatorTest {
 
     @ParameterizedTest
     @MethodSource("loanAmountAndErrorMessages")
-    public void shouldValidateFileExists(File inputFile, int loanAmount, List<String> expectedViolations) {
+    public void shouldValidateParemeterCombinations(File inputFile, BigDecimal loanAmount, List<String> expectedViolations) {
 
         ParameterValidator underTest = new ParameterValidator(new RateCalculatorApp(inputFile,
                                                                                     loanAmount, 36, null));
@@ -28,26 +29,13 @@ class ParameterValidatorTest {
     static Stream<Arguments> loanAmountAndErrorMessages() {
         String validFile = ParameterValidatorTest.class.getResource("/market_data.csv").getFile();
         return Stream.of(
-            arguments(new File(validFile), 100, asList("Loan amount must be between £1000 and £15000")),
-            arguments(new File(validFile), 16000, asList("Loan amount must be between £1000 and £15000")),
-            arguments(new File(validFile), 1222, asList("The loan amount '1222' must be in increment interval of 100")),
-            arguments(new File("some_file.csv"), 1500, asList("File 'some_file.csv' does not exists")),
-            arguments(new File("some_file.csv"), 1111, asList("File 'some_file.csv' does not exists", "The loan amount '1111' must be in increment interval of 100")),
-            arguments(new File("some_file.csv"), 100, asList("File 'some_file.csv' does not exists", "Loan amount must be between £1000 and £15000")));
+            arguments(new File(validFile), new BigDecimal("100"), asList("Loan amount must be between £1000 and £15000")),
+            arguments(new File(validFile), new BigDecimal("16000"), asList("Loan amount must be between £1000 and £15000")),
+            arguments(new File(validFile), new BigDecimal("1222"), asList("The loan amount '1222' must be in increment interval of 100")),
+            arguments(new File("some_file.csv"),  new BigDecimal("1500"), asList("File 'some_file.csv' does not exists")),
+            arguments(new File("some_file.csv"),  new BigDecimal("1111"), asList("File 'some_file.csv' does not exists", "The loan amount '1111' must be in increment interval of 100")),
+            arguments(new File("some_file.csv"),  new BigDecimal("100"), asList("File 'some_file.csv' does not exists", "Loan amount must be between £1000 and £15000")));
 
     }
 
-
 }
-//
-//    @Test
-//    @ParameterizedTest
-//    public void loanAm
-//
-//    static Stream<Arguments> loanAmountAndErrorMessages() {
-//        return Stream.of(
-//            arguments("apple", 1, Arrays.asList("a", "b")),
-//            arguments("lemon", 2, Arrays.asList("x", "y"))
-//                        );
-
-//}

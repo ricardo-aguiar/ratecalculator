@@ -4,6 +4,7 @@ import com.ricardo.ratecalculator.exception.MalformedCsvFileException;
 import com.ricardo.ratecalculator.model.Lender;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class InMemLenderDataRepository implements DataRepository {
         if (line.length != 3) {
             throw new MalformedCsvFileException("Malformed CSV file");
         }
-        return new Lender(line[0], Double.parseDouble(line[1]), Integer.parseInt(line[2]));
+        return new Lender(line[0], Double.parseDouble(line[1]), new BigDecimal(line[2]));
     }
 
 

@@ -1,6 +1,8 @@
 package com.ricardo.ratecalculator.calculator;
 
 import com.ricardo.ratecalculator.model.Lender;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class InterestCalculator {
@@ -10,11 +12,11 @@ public class InterestCalculator {
         return rate / (1 - (Math.pow(1 + rate, -term)));
     }
 
-    double calculateAverageInterest(List<Lender> lenders, double loanAmountRequested) {
-        double weightFactors = lenders.stream()
-                                       .mapToDouble(lender -> lender.getLoanedFunds() * lender.getInterestRate())
-                                       .reduce(0.0, Double::sum);
-        return weightFactors / loanAmountRequested;
+    double calculateAverageInterest(List<Lender> lenders, BigDecimal loanAmountRequested) {
+        BigDecimal weightFactors = lenders.stream()
+                                          .map(lender -> lender.getLoanedFunds().multiply(new BigDecimal(lender.getInterestRate())))
+                                          .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return weightFactors.divide(loanAmountRequested, RoundingMode.CEILING).doubleValue();
     }
 
 }

@@ -3,6 +3,7 @@ package com.ricardo.ratecalculator.service;
 import com.ricardo.ratecalculator.model.Lender;
 import com.ricardo.ratecalculator.model.builder.LenderBuilder;
 import com.ricardo.ratecalculator.repository.DataRepository;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,12 +22,12 @@ public class OfferSelector {
      *
      * @return {@code true} if it does NOT have sufficient funds, otherwise, {@code false}
      */
-    public boolean doesNotHaveSufficientFundsInMarket(int loanAmountRequest) {
-        int availableMarketFund = this.dataRepository.findAll()
-                                                     .stream()
-                                                     .mapToInt(Lender::getAvailableFunds)
-                                                     .reduce(0, Integer::sum);
-        return availableMarketFund < loanAmountRequest;
+    public boolean doesNotHaveSufficientFundsInMarket(BigDecimal loanAmountRequest) {
+        BigDecimal availableMarketFund = this.dataRepository.findAll()
+                                                            .stream()
+                                                            .map(Lender::getAvailableFunds)
+                                                            .reduce(new BigDecimal("0"), BigDecimal::add);
+        return availableMarketFund.compareTo(loanAmountRequest) < 0;
     }
 
     /**
@@ -35,16 +36,16 @@ public class OfferSelector {
      * @param loanAmountRequest - The loan request amount
      * @return A list elected of {@link Lender}
      */
-    public List<Lender> electOffers(int loanAmountRequest) {
+    public List<Lender> electOffers(BigDecimal loanAmountRequest) {
         Iterator<Lender> lendersIterator = this.dataRepository.findAllOrderedByInterestRateAsc().iterator();
 
         List<Lender> electedLenders = new ArrayList<>();
-        int remainingAmountNeeded = loanAmountRequest;
-        while (lendersIterator.hasNext() && remainingAmountNeeded > 0) {
+        BigDecimal remainingAmountNeeded = loanAmountRequest;
+        while (lendersIterator.hasNext() && remainingAmountNeeded.compareTo(new BigDecimal("0")) > 0) {
             Lender lender = lendersIterator.next();
-            int loanedFund = lender.getAvailableFunds() < remainingAmountNeeded ? lender.getAvailableFunds()
-                                                                                : remainingAmountNeeded;
-            remainingAmountNeeded -= loanedFund;
+            BigDecimal loanedFund = lender.getAvailableFunds().compareTo(remainingAmountNeeded) < 0 ? lender.getAvailableFunds()
+                                                                                                    : remainingAmountNeeded;
+            remainingAmountNeeded = remainingAmountNeeded.subtract(loanedFund);
             electedLenders.add(LenderBuilder.copy(lender)
                                             .withLoanedFunds(loanedFund)
                                             .build());

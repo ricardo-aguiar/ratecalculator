@@ -9,6 +9,7 @@ import com.ricardo.ratecalculator.model.Quote;
 import com.ricardo.ratecalculator.repository.InMemLenderDataRepository;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +22,9 @@ public class QuoteServiceTest {
 
         QuoteService quoteService = new QuoteService(new OfferSelector(inMemLenderDataRepository), new RepaymentCalculator(new InterestCalculator(), 36));
 
-        Optional<Quote> actual = quoteService.getQuote(1000);
+        Optional<Quote> actual = quoteService.getQuote(new BigDecimal("1000"));
 
-        assertThat(actual).hasValue(new Quote(1000, 0.07, 30.78, 1108.08));
+        assertThat(actual).hasValue(new Quote(new BigDecimal("1000"), 0.07, new BigDecimal("30.78"), new BigDecimal("1108.08")));
 
     }
 
@@ -34,7 +35,7 @@ public class QuoteServiceTest {
 
         QuoteService quoteService = new QuoteService(new OfferSelector(inMemLenderDataRepository), new RepaymentCalculator(new InterestCalculator(), 36));
 
-        Optional<Quote> actual = quoteService.getQuote(3000);
+        Optional<Quote> actual = quoteService.getQuote(new BigDecimal("3000"));
 
         assertThat(actual).isEmpty();
     }

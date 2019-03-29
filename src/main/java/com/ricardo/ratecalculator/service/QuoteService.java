@@ -5,6 +5,7 @@ import com.ricardo.ratecalculator.exception.UnableToCalculateRepaymentException;
 import com.ricardo.ratecalculator.model.Lender;
 import com.ricardo.ratecalculator.model.Quote;
 import com.ricardo.ratecalculator.model.Repayment;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class QuoteService {
      * @return A {@link Quote} if there are enough fund in the market, ortherwise {@link Optional#empty()}
      * @throws UnableToCalculateRepaymentException for interest free offers
      */
-    public Optional<Quote> getQuote(int loanAmountRequested) throws UnableToCalculateRepaymentException {
+    public Optional<Quote> getQuote(BigDecimal loanAmountRequested) throws UnableToCalculateRepaymentException {
         if (offerSelector.doesNotHaveSufficientFundsInMarket(loanAmountRequested)) {
             return Optional.empty();
         }

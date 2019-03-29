@@ -13,6 +13,7 @@ import com.ricardo.ratecalculator.validation.annotation.FileExists;
 import com.ricardo.ratecalculator.validation.annotation.ValidLoanAmountInterval;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class RateCalculatorApp implements Runnable {
     @Parameters(index = "1",
                 paramLabel = "[LOAN_AMOUNT]",
                 description = "The loan amount requested by a Borrower, minimum £1,000 and maximum £15,000 inclusive and in increments of 100's")
-    private int loanAmount;
+    private BigDecimal loanAmount;
 
     @Option(names = {"-t", "--term"},
             required = false,
@@ -58,7 +59,7 @@ public class RateCalculatorApp implements Runnable {
 
     }
 
-    public RateCalculatorApp(File inputFile, int loanAmount, int termInMonths, CommandSpec spec) {
+    public RateCalculatorApp(File inputFile, BigDecimal loanAmount, int termInMonths, CommandSpec spec) {
         this.inputFile = inputFile;
         this.loanAmount = loanAmount;
         this.termInMonths = termInMonths;

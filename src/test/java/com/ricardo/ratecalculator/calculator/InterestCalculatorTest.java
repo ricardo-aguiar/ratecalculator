@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ricardo.ratecalculator.model.Lender;
 import com.ricardo.ratecalculator.model.builder.LenderBuilder;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.DisplayName;
@@ -14,10 +15,10 @@ class InterestCalculatorTest {
     @Test
     @DisplayName("It should calculate the average interest rate for a list of lenders and their loaned funds")
     public void shouldCalculateAverageInterestRate() {
-        Lender bob = LenderBuilder.aLender().withInterestRate(0.080).withLoanedFunds(480).build();
-        Lender smith = LenderBuilder.aLender().withInterestRate(0.071).withLoanedFunds(520).build();
+        Lender bob = LenderBuilder.aLender().withInterestRate(0.080).withLoanedFunds(new BigDecimal(480)).build();
+        Lender smith = LenderBuilder.aLender().withInterestRate(0.071).withLoanedFunds(new BigDecimal(520)).build();
 
-        double actual = new InterestCalculator().calculateAverageInterest(Arrays.asList(bob, smith), 1000);
+        double actual = new InterestCalculator().calculateAverageInterest(Arrays.asList(bob, smith), new BigDecimal(1000));
 
         assertThat(actual).isEqualTo(0.07532);
     }

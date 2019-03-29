@@ -17,17 +17,16 @@ public class RepaymentCalculator {
         this.term = term;
     }
 
-    public Repayment calculateRepayment(int loanAmountRequested, List<Lender> lenders) throws UnableToCalculateRepaymentException {
-        double loanAmount = 1.0 * loanAmountRequested;
-        double averageInterest = round(interestCalculator.calculateAverageInterest(lenders, loanAmount), 2);
+    public Repayment calculateRepayment(BigDecimal loanAmountRequested, List<Lender> lenders) throws UnableToCalculateRepaymentException {
+        double averageInterest = round(interestCalculator.calculateAverageInterest(lenders, loanAmountRequested), 2);
         if (averageInterest <= 0.0) {
             // Not supporting interest free repayment calculation as the output of the tool
             // does not support breakdown of unequal monthly installments
             throw new UnableToCalculateRepaymentException("Repayment calculation for interest free loan is not supported yet");
         }
         double monthlyCompoundInterest = interestCalculator.calculateMonthlyCompoundInterest(averageInterest, term);
-        double monthlyRepay = round(monthlyCompoundInterest * loanAmountRequested, 2);
-        double totalRepay = round(monthlyRepay * term, 2);
+        BigDecimal monthlyRepay = loanAmountRequested.multiply(new BigDecimal(monthlyCompoundInterest)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal totalRepay = monthlyRepay.multiply(new BigDecimal(String.valueOf(term)));
         return new Repayment(monthlyRepay, totalRepay, averageInterest);
     }
 

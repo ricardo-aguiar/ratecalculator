@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.ricardo.ratecalculator.model.Quote;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.util.Locale;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ class ConsoleOutputPrinterTest {
     public void shouldPrintFormattedQuoteToConsole() {
         OutputPrinter underTest = new ConsoleOutputPrinter();
 
-        underTest.printQuote(new Quote(1000, 0.07, 30.78, 1108.10), Locale.UK);
+        underTest.printQuote(new Quote(new BigDecimal("1000"), 0.07, new BigDecimal("30.78"), new BigDecimal("1108.10")), Locale.UK);
 
         String[] actual = outContent.toString().split(System.getProperty("line.separator"));
         assertThat(actual).hasSize(4);

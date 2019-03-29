@@ -1,19 +1,20 @@
 package com.ricardo.ratecalculator.model.builder;
 
 import com.ricardo.ratecalculator.model.Lender;
+import java.math.BigDecimal;
 
 
 public final class LenderBuilder {
 
     private String name;
     private double interestRate;
-    private int availableFunds;
-    private int loanedFunds;
+    private BigDecimal availableFunds;
+    private BigDecimal loanedFunds;
 
     private LenderBuilder() {
     }
 
-    private LenderBuilder(String name, double interestRate, int availableFunds, int loanedFunds) {
+    private LenderBuilder(String name, double interestRate, BigDecimal availableFunds, BigDecimal loanedFunds) {
         this.name = name;
         this.interestRate = interestRate;
         this.availableFunds = availableFunds;
@@ -38,12 +39,12 @@ public final class LenderBuilder {
         return this;
     }
 
-    public LenderBuilder withAvailableFunds(int availableFunds) {
+    public LenderBuilder withAvailableFunds(BigDecimal availableFunds) {
         this.availableFunds = availableFunds;
         return this;
     }
 
-    public LenderBuilder withLoanedFunds(int loanedFunds) {
+    public LenderBuilder withLoanedFunds(BigDecimal loanedFunds) {
         this.loanedFunds = loanedFunds;
         return this;
     }
